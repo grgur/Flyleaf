@@ -118,11 +118,13 @@ Ext JS and Sencha are both fantastic. So are jQuery and Backbone. It's not that 
 Current state
 -----
 Beta. **You** can help! Play with it, test, develop, contribute. Share. 
-*Source code will be released within a few days from this very visit.*
+
+==> **Source code will be released within a few days from this very visit.**
 
 License
 --------
 *Do-whatever-the heck-you-want-with Software License!*
+
 (Actually MIT Licensed)
 
   
