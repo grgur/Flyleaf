@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Flyleaf by grgur</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Flyleaf</h1>
+        <h2>Modern MVC framework for object oriented jQuery and Backbone enabled web app development</h2>
+        <a href="https://github.com/grgur/Flyleaf" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="flyleaf" class="anchor" href="#flyleaf"><span class="octicon octicon-link"></span></a>Flyleaf</h1>
+
+<blockquote>
+<p><em>Modern MVC framework for object oriented jQuery and Backbone enabled web app development</em></p>
+</blockquote>
+
+<p>Flyleaf is a featherlite object oriented approach to writing browser and device agnostic web applications. It introduces Sencha-like architecture to jQuery and Backbone. </p>
+
+<p>Flyleaf brings these hard to resist features on the table:</p>
+
+<ul>
+<li>Full MVC stack</li>
+<li>Modern class system</li>
+<li>Object oriented development<br>
+</li>
+<li>Grain of magic</li>
+</ul><h2>
+<a name="cool-beans" class="anchor" href="#cool-beans"><span class="octicon octicon-link"></span></a>Cool beans</h2>
+
+<ul>
+<li>Object.create based inheritance <em>(fast)</em>, falls back to prototypal for non-ES5 dinosaurs</li>
+<li>Mixins enabled</li>
+<li>Inheritable singletons <em>(who needs a whole class for a single instance?)</em>
+</li>
+<li>Unifrom event system for Views and DOM</li>
+<li>Pseudo threading (w/ timer manager) pushes lower priority work to the end of stack <em>(means speed)</em>
+</li>
+<li>Custom logging and error handling that can be globally turned on or off</li>
+<li>Employs jQuery or underscore methods as <a href="http://jsperf.com">jsperf</a>'d proved fastest</li>
+<li>Works on mobile and desktop, from IE6 onwards</li>
+<li>No skinning, use CSS or SCSS per your likings</li>
+<li>Minimum DOM in Views = <strong>very fast</strong>
+</li>
+<li>Component manager</li>
+<li>View query system, analogous to Ext.ComponentQuery (much simpler, though)</li>
+<li>6kb compressed and minified <em>(61kb with jQuery, Backbone,Handlebars, and Hammer.js)</em>
+</li>
+<li>'use strict';</li>
+<li>JSLint-free</li>
+<li>Compatible with Node.js <em>(woot!)</em>
+</li>
+<li>Highly customizable, extensible, pluggable</li>
+</ul><h2>
+<a name="dependencies" class="anchor" href="#dependencies"><span class="octicon octicon-link"></span></a>Dependencies</h2>
+
+<p>Flyleaf depends on these awesome products</p>
+
+<ul>
+<li>
+<a href="http://jquery.com">jQuery</a> - DOM manipulation. Works with 1.7+ (including 2.x)</li>
+<li>
+<a href="http://backbone.com">Backbone</a> - MV* framework. Models, Collection, Events, and Underscore are utilized</li>
+</ul><p>Both pre-baked and standalone builds of Flyleaf are available for your convenience</p>
+
+<h2>
+<a name="also-included-but-not-dependent-on" class="anchor" href="#also-included-but-not-dependent-on"><span class="octicon octicon-link"></span></a>Also included, but not dependent on</h2>
+
+<p>While flyleaf can function solely with Backbone and jQuery, additional libraries are introduced to provide with often needed features</p>
+
+<ul>
+<li>
+<a href="http://gruntjs.com">Grunt</a> - Project builder</li>
+<li>
+<a href="http://handlebarsjs.com">Handlebars</a> - Templating engine</li>
+<li>
+<a href="http://eightmedia.github.io/hammer.js/">Hammer.js</a> - Touch events recognizer</li>
+</ul><h2>
+<a name="faq" class="anchor" href="#faq"><span class="octicon octicon-link"></span></a>FAQ</h2>
+
+<p><strong>Where does all the speed come from?</strong>
+First of all, Flyleaf utilizes a modern object inheritance system, supported on most modern browsers. Many object oriented frameworks are still stuck with prototypal inheritance. The latter is slower on many levels. </p>
+
+<p>Also, with pseudo threading, Flyleaf was able to make the browser much more responsive while expensive computations and communications (such as template compilation or DOM element rendering) are batched and executed as soon as the browser becomes available again. E.g. when the only real thread is freed up. This ensures lightning fast bootstrap and DOM manipulations.</p>
+
+<p>Most common operations were heavily benchmarked before being introduced. For example, grep() vs each() vs map() vs for loop are evaluated and used in accordance to the best performance benefit without compromising flexibility. As another example, we reuse arrays when possible instead of reinitializing new memory blocks. You see how far we're going to squeeze out some cycles from clients' browsers?</p>
+
+<p>There are numerous other JavaScript development patterns used in this project that are known to preserve memory, minimize garbage collection, lessen object iteration, improve DOM speed, and so on.</p>
+
+<p>If you feel you have insights that can help this project become better, please contribute :)</p>
+
+<p><strong>Which templating engines are supported?</strong>
+Virtually any that support the compilation phase, such as Handlebars, Mustache, _.template. Support for these two is already baked in. An abstract class is provided to help provide support to others. </p>
+
+<p><strong>Why Sencha-like?</strong>
+Ext JS and Sencha Touch are fabulous frameorks for developing desktop and mobile web applications, respectfully. It's hard to single anything out, but the development workflow is certainly amongst the stellar features for both frameworks. Experience generated with the two drove the idea behind Flyleaf. </p>
+
+<p>If you are a jQuery developer who ever wanted to develop a web app, you must have felt the need for a clean architecture to follow. Ever desired for modular development, object oriented approach, powerful class system? Here it is :)</p>
+
+<p><strong>What makes it Sencha-like?</strong>
+These features are influenced by Ext and Sencha Touch but the end result is not really the same. Many have been improved for easier and faster developement. </p>
+
+<ul>
+<li>Application concept</li>
+<li>Sencha Touch-like controllers</li>
+<li>Models and Stores (Collections)</li>
+<li>Component and Container</li>
+<li>Class system</li>
+<li>Base Class</li>
+<li>Component manager</li>
+<li>Component query</li>
+<li>Mixins</li>
+<li>Singletons</li>
+<li>Error handling</li>
+<li>Event system</li>
+<li>Error handling</li>
+<li>DOM node caching - <code>cloneNode(true)</code> FTW</li>
+</ul><p><strong>What's missing from Ext?</strong></p>
+
+<ul>
+<li>Layouts</li>
+<li>Widgets</li>
+<li>Theming</li>
+<li>Advanced component queries</li>
+<li>Heavy abstraction</li>
+<li>Draw and charting</li>
+<li>Soft scroller (Touch)</li>
+<li>Ext.Direct</li>
+<li>Loader and dependency management (you are welcome to use RequireJS)</li>
+</ul><p><strong>OK, I'm an Ext developer, what's been improved?</strong>
+For example:</p>
+
+<ul>
+<li>Component and Container merged together</li>
+<li>Instantiate App.view.Toolbar simply by issuing <code>Fly.init('Toolbar')</code> - everything else is magic. Looks up in the Application namespace and the framework namespace</li>
+<li>No need for XTypes (see the previous bullet ^^)</li>
+<li>Controllers can control (listen events for) both Views and DOM nodes</li>
+<li>Controllers are singletons. No need for a class and an instance when a single object is sufficient</li>
+<li>Views only come with a single DOM node. Add your own CSS class to it as they are not skinned (yep, you run the party). Even better, you can use <a href="http://foundation.zurb.com/">Zurb Foundation</a> or similar</li>
+<li>Strict mode</li>
+<li>Smaller featureset = smaller overhead</li>
+<li>License</li>
+</ul><p>Ext JS and Sencha are both fantastic. So are jQuery and Backbone. It's not that easy to find space for improvements in either, wouldn't you agree? If you've got ideas, good or bad, pass them on!</p>
+
+<h2>
+<a name="current-state" class="anchor" href="#current-state"><span class="octicon octicon-link"></span></a>Current state</h2>
+
+<p>Beta. <strong>You</strong> can help! Play with it, test, develop, contribute. Share. </p>
+
+<p>==&gt; <strong>Source code will be released within a few days from this very visit.</strong></p>
+
+<h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p><em>Do-whatever-the heck-you-want-with Software License!</em></p>
+
+<p>(Actually MIT Licensed)</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/grgur/Flyleaf/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/grgur/Flyleaf/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/grgur/Flyleaf"></a> is maintained by <a href="https://github.com/grgur">grgur</a>.</p>
+
+          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+            <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-319982-19");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
