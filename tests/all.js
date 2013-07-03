@@ -1,0 +1,3 @@
+define([
+	'./demo/demo'
+], function () {});

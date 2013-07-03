@@ -1,0 +1,7 @@
+/**
+ * Flyleaf framework
+ * ^^^^^^^^^^^^^^^^^^
+ */
+(function (global, $) {
+    'use strict';
+

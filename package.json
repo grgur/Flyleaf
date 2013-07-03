@@ -1,0 +1,14 @@
+{
+    "name"            : "Flyleaf",
+    "filename"        : "fly",
+    "version"         : "0.1",
+    "private"         : true,
+    "devDependencies" : {
+        "grunt"                  : "~0.4.1",
+        "grunt-contrib-nodeunit" : "~0.1.2",
+        "grunt-contrib-uglify"   : "latest",
+        "grunt-contrib-concat"   : "latest",
+        "grunt-contrib-watch"    : "latest",
+        "grunt-contrib-compass"  : "latest"
+    }
+}
