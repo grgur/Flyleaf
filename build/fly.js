@@ -1,4 +1,4 @@
-/*! Flyleaf v0.1 2013-07-15 20:00 */
+/*! Flyleaf v0.1 2013-07-15 20:38 */
 /**
  * Flyleaf framework
  * ^^^^^^^^^^^^^^^^^^
@@ -6,7 +6,7 @@
 (function (global, $) {
     'use strict';
 
-;var version = '0.1.20130715-2000',
+;var version = '0.1.20130715-2038',
     libName = global.Flyleaf || 'Fly',
     Fly = {},
     F = Fly, //shorthand
@@ -264,8 +264,8 @@ Fly.util = {};$.extend(Fly, {
 
     /**
      * Instantiate and initialize a class
-     * @param {String} name
-     * @param {Object} cfg
+     * @param {String} name Class name
+     * @param {Object} cfg Configuration to apply and override the Class defaults
      */
     init : function (name, cfg) {
         var cls,
@@ -298,6 +298,26 @@ Fly.util = {};$.extend(Fly, {
         return instance;
     },
 
+    /**
+     * Find a reference by it's full or partial name
+     * Will search for (in this order):
+     *  1. Entered name
+     *  2. App namespace + name (e.g. MyApp.someName)
+     *  3. Fly namespace + name (e.g. Fly.someName)
+     *  4. App view + name (e.g. MyApp.view.someName)
+     *  5. Fly view + name (e..g Fly.view.someName)
+     *  6. App + name (App.someName)
+     *  7. Undefined if none of the above is found
+     *
+     * Example:
+     *      Fly.def('MyApp.view.ContactList', extend: 'Fly.view.List');
+     *
+     *      Fly.getClass('ContactList'); //returns MyApp.view.ContactList
+     *      Fly.getClass('List'); //returns Fly.view.List
+     *
+     * @param name
+     * @returns {*}
+     */
     getClass: function (name) {
         var appName = Fly.App.name;
 
@@ -308,7 +328,12 @@ Fly.util = {};$.extend(Fly, {
                 Fly.ns('Fly.view.' + name) ||
                 Fly.ns('App.' + name);
     }
-});;var cmpReg = /^[\w]*/,
+});;/**
+ * Main Registry
+ * Collects View instances and Controllers
+ */
+
+var cmpReg = /^[\w]*/,
     attrReg = /(?:[\[](?:@)?([\w\-]+)\s?(?:(=|.=)\s?['"]?(.*?)["']?)?[\]])/,
 
     isDomEvent = /^[#\.a-zA-Z]/,
@@ -320,12 +345,25 @@ Fly.util = {};$.extend(Fly, {
 Fly.def('Fly.Registry', {
     singleton : true,
 
+    /**
+     * List of view instances
+     */
     views : undefined,
 
+    /**
+     * Collection of controllers
+     */
     controllers : undefined,
 
+    /**
+     * Listeners registered through controllers
+     */
     controls : [],
 
+    /**
+     * Set up Backbone Collections for views and controllers
+     * @private
+     */
     init : function () {
         var me = this;
         me.views = new Backbone.Collection();
@@ -335,6 +373,11 @@ Fly.def('Fly.Registry', {
         //        me.views.on('add', me.registerViewListeners, me);
     },
 
+    /**
+     * Add a view to the registry
+     * @private
+     * @param {Fly.view.View} instance View instance
+     */
     add : function (instance) {
         this.views.add({
             id        : instance.id,
@@ -346,6 +389,11 @@ Fly.def('Fly.Registry', {
         this.registerViewListeners(instance);
     },
 
+    /**
+     * Remvove a view instance from the registry
+     * @private
+     * @param {Fly.view.View} instance View instance
+     */
     remove : function (instance) {
         var collection = this.views,
             models = collection.where({id : instance.id});
@@ -355,9 +403,10 @@ Fly.def('Fly.Registry', {
 
 
     /**
-     * Parse query string
-     * @param query
-     * @returns {*}
+     * Parse a query string
+     * @private
+     * @param {String} query Query to parse
+     * @returns {Object} Parsed object
      */
     parseQuery : function (query) {
         var cmp = query.match(cmpReg),
@@ -388,9 +437,11 @@ Fly.def('Fly.Registry', {
     },
 
     /**
-     * The hard work of querying
-     * @param query
-     * @returns {*}
+     * Find the view based on the query
+     * @private
+     * @param {String} query Query string
+     * @param {Fly.view.View[]} views Views to match against
+     * @returns {Fly.view.View[]/Boolean} Returns array of matched views or false if none found
      */
     doQuery : function (query, views) {
         var me = this,
@@ -427,10 +478,15 @@ Fly.def('Fly.Registry', {
     },
 
     /**
-     * Find instantiated classes
-     * @param query
-     * @param {Array} views Limit to specific views
-     * @returns {*}
+     * Find instantiated views by a simple query string
+     *
+     * Query examples
+     *      Fly.Registry.query('className'); // Find views instantiated from className (see @Fly.getClass)
+     *      Fly.Registry.query('className[foo=bar]'); // Find views with key foo equaling to the value of bar
+     *
+     * @param {String} query Query string
+     * @param {Fly.view.View[]} views Limit to specific views
+     * @returns {Fly.view.View[]/Boolean} Returns array of matched views or false if none found
      */
     query : function (query, views) {
         var cached = registryCache[query];
@@ -443,9 +499,9 @@ Fly.def('Fly.Registry', {
     },
 
     /**
-     * Return the first found item
-     * @param query
-     * @returns {*}
+     * Return the first found view
+     * @param {String} query Query string
+     * @returns {Fly.view.View/Boolean} Returns array of matched views or false if none found
      */
     first : function (query) {
         var items = this.query(query);
@@ -457,10 +513,18 @@ Fly.def('Fly.Registry', {
         return items[0];
     },
 
+    /**
+     * Clear registry cache
+     */
     clearCache : function () {
         registryCache = {};
     },
 
+
+    /**
+     * Add a controller to the registry and initialize the listeners in the control object
+     * @param controller
+     */
     addController   : function (controller) {
         var me = this;
 
@@ -476,12 +540,22 @@ Fly.def('Fly.Registry', {
         me.controls.push(controller.control);
     },
 
-    // fix scope in control
+    /**
+     * Fix control scope
+     * @private
+     * @param {Fly.Controller} controller
+     * @param {String} query
+     * @param {Object} events
+     */
     fixControlScope : function (controller, query, events) {
         $.each(events, $.proxy(this.fixEventScope, this, controller, events));
     },
 
-    // fix string event callback
+    /**
+     * Fix string event callback
+     * @private
+     */
+
     fixEventScope: function (controller, events, event, callback) {
         if (F.isString(callback)) {
             events[event] = {
@@ -501,7 +575,7 @@ Fly.def('Fly.Registry', {
     },
 
     /**
-     * finds listeners in controllers and registers them in views
+     * Finds listeners in controllers and registers them in views
      */
     registerControllerListener : function (events, query, obj, views) {
         var me = this,
@@ -551,7 +625,7 @@ Fly.def('Fly.Registry', {
     },
 
     /**
-     * when a view is instantiated, it will get processed to see if it can be registered with any controller
+     * When a view is instantiated, it will get processed to see if it can be registered with any controller
      */
     registerViewListeners : function (view) {
         var me = this,
@@ -766,8 +840,7 @@ Fly.def('Fly.BaseClass', {
         }
     }
 });;/**
- * Manages timers
- * @type {{timerID: number, timers: Array, add: Function, start: Function, stop: Function}}
+ * Manages timers. Timers can fire in batches of N calls per batch. Once a batch is executed, a new timer is created.
  *
  * @event start
  * Fires when execution is started
@@ -780,23 +853,52 @@ Fly.def('Fly.BaseClass', {
  */
 
 Fly.def('Fly.TimerManager', {
+    /**
+     * Number of calls in a single batch
+     */
     batch   : 350,
+
+    /**
+     * Currently running timer
+     * @private
+     */
     timerID : 0,
+
+    /**
+     * Queue of method calls
+     * @private
+     */
     queue  : [],
 
+    /**
+     * Current timer callback
+     * @private
+     */
     runner : undefined,
 
+    /**
+     * Cache the runner
+     */
     init : function () {
         var me = this;
         me.runner = $.proxy(me.runNext, me);
     },
 
+    /**
+     * Add a function to the queue. Optionally, execute the timer process immediately.
+     * @param {Function}fn Function to execute in timer
+     * @param {Boolean} autoStart Start the queue if true
+     */
     add   : function (fn, autoStart) {
         this.queue.push(fn);
         if (autoStart) {
             this.start();
         }
     },
+
+    /**
+     * Start the queue
+     */
     start : function () {
         var me = this;
         if (me.timerID) {
@@ -807,6 +909,10 @@ Fly.def('Fly.TimerManager', {
 
         me.timerID = setTimeout(me.runner, 0);
     },
+
+    /**
+     * Stop execution
+     */
     stop  : function () {
         var me = this;
         clearTimeout(me.timerID);
@@ -814,6 +920,9 @@ Fly.def('Fly.TimerManager', {
         me.trigger('stop', me);
     },
 
+    /**
+     * Run the next batch
+     */
     runNext : function () {
         var me = this,
             timers = me.queue,
@@ -860,7 +969,9 @@ Fly.def('Fly.TimerManager', {
     launch : undefined
 });;/**
  * Instance of {@link Fly.TimerManager} that manipulates with pseudo-threads
- * @type {*}
+ * Batch expensive calls to run one after another and consequently improve browser responsiveness
+ * by not locking the main thread for too long
+ *
  */
 Fly.ThreadManager = Fly.init('TimerManager');
 

@@ -1,3 +1,8 @@
+/**
+ * Main Registry
+ * Collects View instances and Controllers
+ */
+
 var cmpReg = /^[\w]*/,
     attrReg = /(?:[\[](?:@)?([\w\-]+)\s?(?:(=|.=)\s?['"]?(.*?)["']?)?[\]])/,
 
@@ -10,12 +15,25 @@ var cmpReg = /^[\w]*/,
 Fly.def('Fly.Registry', {
     singleton : true,
 
+    /**
+     * List of view instances
+     */
     views : undefined,
 
+    /**
+     * Collection of controllers
+     */
     controllers : undefined,
 
+    /**
+     * Listeners registered through controllers
+     */
     controls : [],
 
+    /**
+     * Set up Backbone Collections for views and controllers
+     * @private
+     */
     init : function () {
         var me = this;
         me.views = new Backbone.Collection();
@@ -25,6 +43,11 @@ Fly.def('Fly.Registry', {
         //        me.views.on('add', me.registerViewListeners, me);
     },
 
+    /**
+     * Add a view to the registry
+     * @private
+     * @param {Fly.view.View} instance View instance
+     */
     add : function (instance) {
         this.views.add({
             id        : instance.id,
@@ -36,6 +59,11 @@ Fly.def('Fly.Registry', {
         this.registerViewListeners(instance);
     },
 
+    /**
+     * Remvove a view instance from the registry
+     * @private
+     * @param {Fly.view.View} instance View instance
+     */
     remove : function (instance) {
         var collection = this.views,
             models = collection.where({id : instance.id});
@@ -45,9 +73,10 @@ Fly.def('Fly.Registry', {
 
 
     /**
-     * Parse query string
-     * @param query
-     * @returns {*}
+     * Parse a query string
+     * @private
+     * @param {String} query Query to parse
+     * @returns {Object} Parsed object
      */
     parseQuery : function (query) {
         var cmp = query.match(cmpReg),
@@ -78,9 +107,11 @@ Fly.def('Fly.Registry', {
     },
 
     /**
-     * The hard work of querying
-     * @param query
-     * @returns {*}
+     * Find the view based on the query
+     * @private
+     * @param {String} query Query string
+     * @param {Fly.view.View[]} views Views to match against
+     * @returns {Fly.view.View[]/Boolean} Returns array of matched views or false if none found
      */
     doQuery : function (query, views) {
         var me = this,
@@ -117,10 +148,15 @@ Fly.def('Fly.Registry', {
     },
 
     /**
-     * Find instantiated classes
-     * @param query
-     * @param {Array} views Limit to specific views
-     * @returns {*}
+     * Find instantiated views by a simple query string
+     *
+     * Query examples
+     *      Fly.Registry.query('className'); // Find views instantiated from className (see @Fly.getClass)
+     *      Fly.Registry.query('className[foo=bar]'); // Find views with key foo equaling to the value of bar
+     *
+     * @param {String} query Query string
+     * @param {Fly.view.View[]} views Limit to specific views
+     * @returns {Fly.view.View[]/Boolean} Returns array of matched views or false if none found
      */
     query : function (query, views) {
         var cached = registryCache[query];
@@ -133,9 +169,9 @@ Fly.def('Fly.Registry', {
     },
 
     /**
-     * Return the first found item
-     * @param query
-     * @returns {*}
+     * Return the first found view
+     * @param {String} query Query string
+     * @returns {Fly.view.View/Boolean} Returns array of matched views or false if none found
      */
     first : function (query) {
         var items = this.query(query);
@@ -147,10 +183,18 @@ Fly.def('Fly.Registry', {
         return items[0];
     },
 
+    /**
+     * Clear registry cache
+     */
     clearCache : function () {
         registryCache = {};
     },
 
+
+    /**
+     * Add a controller to the registry and initialize the listeners in the control object
+     * @param controller
+     */
     addController   : function (controller) {
         var me = this;
 
@@ -166,12 +210,22 @@ Fly.def('Fly.Registry', {
         me.controls.push(controller.control);
     },
 
-    // fix scope in control
+    /**
+     * Fix control scope
+     * @private
+     * @param {Fly.Controller} controller
+     * @param {String} query
+     * @param {Object} events
+     */
     fixControlScope : function (controller, query, events) {
         $.each(events, $.proxy(this.fixEventScope, this, controller, events));
     },
 
-    // fix string event callback
+    /**
+     * Fix string event callback
+     * @private
+     */
+
     fixEventScope: function (controller, events, event, callback) {
         if (F.isString(callback)) {
             events[event] = {
@@ -191,7 +245,7 @@ Fly.def('Fly.Registry', {
     },
 
     /**
-     * finds listeners in controllers and registers them in views
+     * Finds listeners in controllers and registers them in views
      */
     registerControllerListener : function (events, query, obj, views) {
         var me = this,
@@ -241,7 +295,7 @@ Fly.def('Fly.Registry', {
     },
 
     /**
-     * when a view is instantiated, it will get processed to see if it can be registered with any controller
+     * When a view is instantiated, it will get processed to see if it can be registered with any controller
      */
     registerViewListeners : function (view) {
         var me = this,

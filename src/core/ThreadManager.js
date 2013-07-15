@@ -1,6 +1,8 @@
 /**
  * Instance of {@link Fly.TimerManager} that manipulates with pseudo-threads
- * @type {*}
+ * Batch expensive calls to run one after another and consequently improve browser responsiveness
+ * by not locking the main thread for too long
+ *
  */
 Fly.ThreadManager = Fly.init('TimerManager');
 
