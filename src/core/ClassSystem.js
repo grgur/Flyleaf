@@ -1,8 +1,8 @@
 $.extend(Fly, {
     /**
      * Create a custom namespace. Allows deep creation
-     * @param {String} ns
-     * @param {Object} value
+     * @param {String} ns Namespace to create
+     * @param {Mixed} value Value to apply to the newely created reference
      */
     ns : function (ns, value) {
         if (!F.isString(ns)) {
@@ -42,8 +42,10 @@ $.extend(Fly, {
     },
 
     /**
-     * Define a new class
-     * @
+     * Define a new Class
+     * @param {String} ns Namespace for the class. Will be automatically created.
+     * @param {Object} config Default key value pairs for the new Class. Think of it as the prototype (but it's not)
+     * @returns {Object/Function} Newly created Class
      */
     def : function (ns, config) {
         var Base = Fly.BaseClass || {},
@@ -54,9 +56,21 @@ $.extend(Fly, {
             config = {};
         }
 
-        Class = $.extend(F.objCreate(Extend), config);
-        Class.$super = Extend;
-        Class.$className = ns;
+        // @debug
+
+        if (F.isFunction(Extend)) {
+            Class = F.protoInherit(Extend, config);
+            Class.prototype.$super = Extend;
+            Class.prototype.$className = ns;
+        }
+
+        else {
+            Class = $.extend(F.objCreate(Extend), config);
+            Class.$super = Extend;
+            Class.$className = ns;
+        }
+
+        // --------
 
         Fly.ns(ns, Class);
 
@@ -70,8 +84,8 @@ $.extend(Fly, {
 
     /**
      * Instantiate and initialize a class
-     * @param {String} name
-     * @param {Object} cfg
+     * @param {String} name Class name
+     * @param {Object} cfg Configuration to apply and override the Class defaults
      */
     init : function (name, cfg) {
         var cls,
@@ -104,6 +118,26 @@ $.extend(Fly, {
         return instance;
     },
 
+    /**
+     * Find a reference by it's full or partial name
+     * Will search for (in this order):
+     *  1. Entered name
+     *  2. App namespace + name (e.g. MyApp.someName)
+     *  3. Fly namespace + name (e.g. Fly.someName)
+     *  4. App view + name (e.g. MyApp.view.someName)
+     *  5. Fly view + name (e..g Fly.view.someName)
+     *  6. App + name (App.someName)
+     *  7. Undefined if none of the above is found
+     *
+     * Example:
+     *      Fly.def('MyApp.view.ContactList', extend: 'Fly.view.List');
+     *
+     *      Fly.getClass('ContactList'); //returns MyApp.view.ContactList
+     *      Fly.getClass('List'); //returns Fly.view.List
+     *
+     * @param name
+     * @returns {*}
+     */
     getClass: function (name) {
         var appName = Fly.App.name;
 

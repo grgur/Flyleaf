@@ -31,8 +31,6 @@ module.exports = function (grunt) {
                     'src/tpl/Handlebars.js',
                     'src/tpl/Underscore.js',
 
-//                    'src/core/TouchEvents.js',
-
                     'src/wrap.end'
                 ],
                 options : {
@@ -45,7 +43,6 @@ module.exports = function (grunt) {
             libs : {
                 src     : [
                     'lib/jquery2.js',
-//                    'lib/touchevents.js',
                     'lib/jquery.hammer.js',
                     'lib/underscore.js',
                     'lib/json2.js',
