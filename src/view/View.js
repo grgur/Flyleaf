@@ -1,11 +1,7 @@
 /**
- * TODO: VVVVVVVVVVV
- * - div el should have data-property with possibly class name (TBD)
- * - monitor dependents and be able to recreate them on remove->show
- * - destroy should remove dependents as well
- * - dependents are configurable. They don't have to be nested under the parent
- * - How to add descendents into _.template and how to recreate them?
- * ^^^^^^^^^^^^^^^^^^
+ * Main View class.
+ * Sets up all the defaults for newly created views.
+ * A view can exist on it's own or canhave children
  */
 Fly.def('Fly.view.View', {
     /**
@@ -373,6 +369,10 @@ Fly.def('Fly.view.View', {
         });
     },
 
+    /**
+     * Add a child view
+     * @returns {*}
+     */
     add : function () {
         var me = this,
             args = arraySlice.call(arguments),
