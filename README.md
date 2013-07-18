@@ -119,7 +119,9 @@ Current state
 -----
 Beta. **You** can help! Play with it, test, develop, contribute. Share. 
 
-==> **Source code will be released within a few days from this very visit.**
+Demo
+-----
+* [Contacts]
 
 License
 --------
@@ -135,4 +137,5 @@ License
   [Handlebars]: http://handlebarsjs.com
   [Hammer.js]: http://eightmedia.github.io/hammer.js/
   [jsperf]: http://jsperf.com
+  [contacts]: http://grgur.github.io/Flyleaf/demos/contacts/index.html
   
