@@ -76,7 +76,6 @@ $.extend(Fly, {
 
         if (Class.singleton === true) {
             Class.construct && Class.construct(config);
-            Class.init && Class.init(config);
         }
 
         return Class;
